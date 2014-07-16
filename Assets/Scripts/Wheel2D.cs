@@ -6,9 +6,6 @@ using System.Collections;
 public class Wheel2D : MonoBehaviour 
 {
 	public Vector2 _position; // The position of the wheel relative to the car
-	public bool _is_drive = false; // Is the wheel a driving wheel
-	public bool _is_steer = false; // Does the wheel steer
-
 	public float _steer_angle = 0; // The max steering angle for the wheel
 	public float _slip_velocity = 4; // The lateral velocity at which the wheel will begin to slip
 	public float _lateral_weight = 1; // Effects the lateral force from the wheels, lower values cause the car to be more boat like
@@ -33,8 +30,7 @@ public class Wheel2D : MonoBehaviour
 	{
 		// The rotation of the wheel
 		_rotation = rigidbody2D.rotation;
-		if (_is_steer)
-			_rotation -= Input.GetAxis("Horizontal")*_steer_angle;
+		_rotation -= Input.GetAxis("Horizontal")*_steer_angle;
 		// The position in world space
 		_relative_position = rigidbody2D.GetRelativePoint(_position);
 	}
@@ -61,9 +57,6 @@ public class Wheel2D : MonoBehaviour
 	// Apply driving force to driving wheels
 	void ApplyDriveForce ()
 	{
-		if (!_is_drive)
-			return;
-
 		// Create a drive force
 		Vector2 drive_force = new Vector2(0, _drive_force * Input.GetAxis("Vertical"));
 
@@ -79,13 +72,10 @@ public class Wheel2D : MonoBehaviour
 			Instantiate(_tire_tracks, _relative_position, Quaternion.identity);
 	}
 
-	// Draw the wheel in the scene view, red wheels are driving wheels, green are not
+	// Draw the wheel in the scene view
 	public void OnDrawGizmosSelected ()
 	{
-		if (_is_drive)
-			Gizmos.color = Color.red;
-		else
-			Gizmos.color = Color.green;
+		Gizmos.color = Color.green;
 		Gizmos.DrawWireSphere((Vector3)rigidbody2D.GetRelativePoint(_position), 0.25f);
 	}
 
